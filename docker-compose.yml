@@ -1,0 +1,17 @@
+version: '3'
+services:
+  db:
+    image: postgres:11-alpine
+  web:
+    build: .
+    command: dockerize -wait tcp://db:5432 -timeout 60s flask run --host=0.0.0.0
+    environment:
+      - FLASK_APP=manage.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+    links:
+      - db
